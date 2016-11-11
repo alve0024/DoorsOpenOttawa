@@ -12,9 +12,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,36 +47,24 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         LayoutInflater inflater =
                 (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.item_building, parent, false);
+        View item = inflater.inflate(R.layout.item_building, parent, false);
 
-        //Display planet name in the TextView widget
-        Building building = buildingList.get(position);
-        String imageUrl = building.getImage();
-        TextView tv = (TextView) view.findViewById(R.id.textView1);
-        tv.setText(imageUrl);
+        // Old
+        //Display building name in the TextView widget
+        // Building building = buildingList.get(position);
+        // String name = building.getName();
 
-        // TODO: Display planet photo in ImageView widget
-        // Lazy initialize a planet's bitmap image
-        if (imageUrl != null) {
-            Log.i( "PLANETS", building.getName() + "\tbitmap in memory" );
-            ImageView image = (ImageView) view.findViewById(R.id.imageView);
-            BitmapDrawable bitmapDrawable = new BitmapDrawable(imageUrl);
-            image.setImageDrawable(bitmapDrawable);
-        }
-        else {
-            Log.i( "BUILDING", building.getName() + "\tfetching bitmap using AsyncTask");
-            BuildingAndView container = new BuildingAndView();
-            container.building = building;
-            container.view = view;
+        // New
+        String name = buildingList.get(position).getName();
 
-            ImageLoader loader = new ImageLoader();
-            loader.execute(container);
-        }
+//        TextView itemTxtVw = (TextView) item.findViewById(R.id.textView);
+//        itemTxtVw.setText(name);
 
-        return view;
+        TextView itemTxtVw = (TextView) item.findViewById(R.id.textView);
+        itemTxtVw.setText(name);
+        return item;
     }
 
     // container for AsyncTask params
@@ -112,7 +98,8 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
         protected void onPostExecute(BuildingAndView result) {
             ImageView image = (ImageView) result.view.findViewById(R.id.imageView);
             image.setImageBitmap(result.bitmap);
-//            result.building.setImage(result.bitmap);
         }
     }
 }
+
+
