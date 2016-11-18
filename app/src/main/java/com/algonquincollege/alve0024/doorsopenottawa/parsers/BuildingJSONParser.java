@@ -17,11 +17,6 @@ public class BuildingJSONParser {
 
     public static List<Building> parseFeed(String content) {
         try {
-            // Old
-            //  JSONObject jsonResponse = new JSONObject(content);
-            //  JSONArray buildingArray = jsonResponse.getJSONArray("buildings");
-
-            // New
             JSONArray buildingArray = new JSONObject(content).getJSONArray("buildings");
             List<Building> buildingList = new ArrayList<>();
 
@@ -34,6 +29,7 @@ public class BuildingJSONParser {
                 building.setName(obj.getString("name"));
                 building.setAddress(obj.getString("address"));
                 building.setImage(obj.getString("image"));
+
                 buildingList.add(building);
             }
 

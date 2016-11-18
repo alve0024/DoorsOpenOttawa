@@ -1,6 +1,8 @@
 package com.algonquincollege.alve0024.doorsopenottawa.model;
 
 
+import android.graphics.Bitmap;
+
 /**
  * Created by leonardoalps on 2016-11-07.
  */
@@ -12,6 +14,7 @@ public class Building {
     private String name;
     private String address;
     private String image;
+    private Bitmap bitmap;
 
     public String getImage() {
         return image;
@@ -45,4 +48,11 @@ public class Building {
         this.address = address + "Ottawa, Ontario";
     }
 
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
 }

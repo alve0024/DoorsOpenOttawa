@@ -11,6 +11,8 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.TextView;
@@ -40,7 +42,6 @@ public class MainActivity extends ListActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.INVISIBLE);
 
-
         tasks = new ArrayList<>();
     }
 
@@ -64,12 +65,7 @@ public class MainActivity extends ListActivity {
 
 
     private void requestData(String uri) {
-        // New
         new MyTask().execute(uri);
-
-        // Old
-        // MyTask task = new MyTask();
-        // task.execute(uri);
     }
 
     protected void updateDisplay() {
@@ -80,17 +76,8 @@ public class MainActivity extends ListActivity {
     protected boolean isOnline() {
         ConnectivityManager conn_manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conn_manager.getActiveNetworkInfo();
-        // New
         return (netInfo != null && netInfo.isConnectedOrConnecting()) ? true : false;
-
-        // Old
-        // if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-        //     return true;
-        // } else {
-        //     return false;
-        // }
     }
-
 
     private class MyTask extends AsyncTask<String, String, String> {
 

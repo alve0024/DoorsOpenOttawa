@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.util.LruCache;
 
 import com.algonquincollege.alve0024.doorsopenottawa.model.Building;
 
@@ -38,11 +39,16 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
 
     private Context context;
     private List<Building> buildingList;
+    private LruCache<Integer, Bitmap> imageCache;
 
     public BuildingAdapter(Context context, int resource, List<Building> objects) {
         super(context, resource, objects);
         this.context = context;
         this.buildingList = objects;
+
+        final int maxMemory = (int)(Runtime.getRuntime().maxMemory() /1024);
+        final int cacheSize = maxMemory / 8;
+        imageCache = new LruCache<>(cacheSize);
     }
 
     @Override
@@ -51,19 +57,31 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
                 (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View item = inflater.inflate(R.layout.item_building, parent, false);
 
-        // Old
-        //Display building name in the TextView widget
-        // Building building = buildingList.get(position);
-        // String name = building.getName();
-
-        // New
-        String name = buildingList.get(position).getName();
-
-//        TextView itemTxtVw = (TextView) item.findViewById(R.id.textView);
-//        itemTxtVw.setText(name);
-
+        Building building = buildingList.get(position);
+        String name = building.getName();
         TextView itemTxtVw = (TextView) item.findViewById(R.id.textView);
         itemTxtVw.setText(name);
+
+        ImageView img = (ImageView) item.findViewById(R.id.imageView);
+        img.setImageBitmap(buildingList.get(position).getBitmap());
+
+        Bitmap bitmap = imageCache.get(building.getBuildingId());
+//        if (buildingList.get(position).getBitmap() != null)
+       if (bitmap != null){
+//            Log.i( "PLANETS", buildingList.getName() + "\tbitmap in memory" );
+            ImageView image = (ImageView) item.findViewById(R.id.imageView);
+            image.setImageBitmap(buildingList.get(position).getBitmap());
+        }
+        else {
+//            Log.i( "PLANETS", planet.getName() + "\tfetching bitmap using AsyncTask");
+            BuildingAndView container = new BuildingAndView();
+            container.building = building;
+            container.view = item;
+
+            ImageLoader loader = new ImageLoader();
+            loader.execute(container);
+        }
+
         return item;
     }
 
@@ -85,6 +103,7 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
                 String imageUrl = MainActivity.IMAGES_BASE_URL + building.getImage();
                 InputStream in = (InputStream) new URL(imageUrl).getContent();
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
+                building.setBitmap(bitmap);
                 in.close();
                 container.bitmap = bitmap;
                 return container;
@@ -98,6 +117,8 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
         protected void onPostExecute(BuildingAndView result) {
             ImageView image = (ImageView) result.view.findViewById(R.id.imageView);
             image.setImageBitmap(result.bitmap);
+            //result.building.setBitmap(result.bitmap);
+            imageCache.put(result.building.getBuildingId(), result.bitmap);
         }
     }
 }
