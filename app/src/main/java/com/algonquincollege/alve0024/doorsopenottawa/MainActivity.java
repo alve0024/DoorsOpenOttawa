@@ -43,6 +43,15 @@ public class MainActivity extends ListActivity {
         progressBar.setVisibility(View.INVISIBLE);
 
         tasks = new ArrayList<>();
+
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Building theSelectedBuilding = buildingList.get(position);
+                Toast.makeText(MainActivity.this, theSelectedBuilding.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
