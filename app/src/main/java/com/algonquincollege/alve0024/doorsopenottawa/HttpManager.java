@@ -28,11 +28,6 @@ public class HttpManager {
         BufferedReader reader = null;
 
         try {
-            // Old
-            // open the URI
-            // URL url = new URL(uri);
-            // HttpURLConnection con = (HttpURLConnection) url.openConnection();
-
             // New
             HttpURLConnection con = (HttpURLConnection) new URL(uri).openConnection();
 

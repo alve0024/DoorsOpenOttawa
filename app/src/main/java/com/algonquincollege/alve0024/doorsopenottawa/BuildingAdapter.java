@@ -24,9 +24,9 @@ import android.util.LruCache;
 import com.algonquincollege.alve0024.doorsopenottawa.model.Building;
 
 /**
- * Purpose: customize the Planet cell for each planet displayed in the ListActivity (i.e. MainActivity).
+ * Purpose: customize the Building cell for each building displayed in the ListActivity (i.e. MainActivity).
  * Usage:
- *   1) extend from class ArrayAdapter<YourModelClass>
+ *   1) extend from class ArrayAdapter<Building>
  *   2) @override getView( ) :: decorate the list cell
  *
  * Based on the Adapter OO Design Pattern.
@@ -58,10 +58,15 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
         View item = inflater.inflate(R.layout.item_building, parent, false);
 
         Building building = buildingList.get(position);
-        String name = building.getName();
-        TextView itemTxtVw = (TextView) item.findViewById(R.id.textView);
-        itemTxtVw.setText(name);
+        // Set the name of the building
+        TextView nameTextView = (TextView) item.findViewById(R.id.buildingName);
+        nameTextView.setText(building.getName());
 
+        // Set the address of the building
+        TextView addressTextView = (TextView) item.findViewById(R.id.buildingAddress);
+        addressTextView.setText(building.getAddress());
+
+        // Set the image of the building
         ImageView img = (ImageView) item.findViewById(R.id.imageView);
         img.setImageBitmap(buildingList.get(position).getBitmap());
 

@@ -52,6 +52,13 @@ public class MainActivity extends ListActivity {
                 Toast.makeText(MainActivity.this, theSelectedBuilding.getName(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        // Run Thread and load the list of building
+        if (isOnline()) {
+            requestData( REST_URI );
+        } else {
+            Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -62,13 +69,7 @@ public class MainActivity extends ListActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_get_data) {
-            if (isOnline()) {
-                requestData( REST_URI );
-            } else {
-                Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
-            }
-        }
+
         return false;
     }
 
