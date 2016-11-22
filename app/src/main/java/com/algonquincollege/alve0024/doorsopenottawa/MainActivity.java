@@ -1,13 +1,19 @@
+/**
+ *   Doors Open Ottawa - List information about the Buildings with the Doors Open
+ *
+ *   @author Leonardo Alps (alve0024@algonquinlive.com)
+ *
+ */
+
 package com.algonquincollege.alve0024.doorsopenottawa;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,7 +55,18 @@ public class MainActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Building theSelectedBuilding = buildingList.get(position);
-                Toast.makeText(MainActivity.this, theSelectedBuilding.getName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, theSelectedBuilding.getName(), Toast.LENGTH_SHORT).show();
+
+                String buildingName = theSelectedBuilding.getName();
+                String buildingAddress = theSelectedBuilding.getAddress();
+                String buildingDescription = theSelectedBuilding.getDescription();
+
+                Intent intent = new Intent(getListView().getContext(), DetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("buildingName", buildingName);
+                intent.putExtra("buildingAddress", buildingAddress);
+                intent.putExtra("buildingDescription", buildingDescription);
+                startActivity(intent);
             }
         });
 

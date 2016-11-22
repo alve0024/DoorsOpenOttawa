@@ -3,6 +3,8 @@ package com.algonquincollege.alve0024.doorsopenottawa.model;
 
 import android.graphics.Bitmap;
 
+import java.util.List;
+
 /**
  * Created by leonardoalps on 2016-11-07.
  */
@@ -14,6 +16,8 @@ public class Building {
     private String name;
     private String address;
     private String image;
+    private List<String> openHours;
+    private String description;
     private Bitmap bitmap;
 
     public String getImage() {
@@ -54,5 +58,21 @@ public class Building {
 
     public void setBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
+    }
+
+    public List<String> getOpenHours() {
+        return openHours;
+    }
+
+    public void setOpenHours(List<String> openHours) {
+        this.openHours = openHours;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
