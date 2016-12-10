@@ -71,14 +71,11 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
         img.setImageBitmap(buildingList.get(position).getBitmap());
 
         Bitmap bitmap = imageCache.get(building.getBuildingId());
-//        if (buildingList.get(position).getBitmap() != null)
        if (bitmap != null){
-//            Log.i( "PLANETS", buildingList.getName() + "\tbitmap in memory" );
             ImageView image = (ImageView) item.findViewById(R.id.imageView);
             image.setImageBitmap(buildingList.get(position).getBitmap());
         }
         else {
-//            Log.i( "PLANETS", planet.getName() + "\tfetching bitmap using AsyncTask");
             BuildingAndView container = new BuildingAndView();
             container.building = building;
             container.view = item;

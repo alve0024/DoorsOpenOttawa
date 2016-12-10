@@ -30,10 +30,13 @@ public class BuildingJSONParser {
                 building.setAddress(obj.getString("address"));
                 building.setDescription(obj.getString("description"));
                 building.setImage(obj.getString("image"));
+                JSONArray openHours = obj.getJSONArray("open_hours");
+                for (int j = 0; j < openHours.length(); j++) {
+                    building.addDate(openHours.getJSONObject(j).getString("date"));
+                }
 
                 buildingList.add(building);
             }
-
             return buildingList;
         } catch (JSONException e) {
             e.printStackTrace();

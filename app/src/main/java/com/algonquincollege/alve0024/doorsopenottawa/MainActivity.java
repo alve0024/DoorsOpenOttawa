@@ -7,6 +7,7 @@
 
 package com.algonquincollege.alve0024.doorsopenottawa;
 
+import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -21,17 +22,20 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import android.widget.TextView;
 
 import com.algonquincollege.alve0024.doorsopenottawa.model.Building;
 import com.algonquincollege.alve0024.doorsopenottawa.parsers.BuildingJSONParser;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends ListActivity {
+
+    private static final String ABOUT_DIALOG_TAG;
+
+    static {
+        ABOUT_DIALOG_TAG = "About Dialog";
+    }
 
     // URL to my RESTful API Service hosted on Bluemix account
     public static final String IMAGES_BASE_URL = "https://doors-open-ottawa-hurdleg.mybluemix.net/";
@@ -55,17 +59,20 @@ public class MainActivity extends ListActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Building theSelectedBuilding = buildingList.get(position);
-//                Toast.makeText(MainActivity.this, theSelectedBuilding.getName(), Toast.LENGTH_SHORT).show();
-
-                String buildingName = theSelectedBuilding.getName();
-                String buildingAddress = theSelectedBuilding.getAddress();
-                String buildingDescription = theSelectedBuilding.getDescription();
 
                 Intent intent = new Intent(getListView().getContext(), DetailActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("buildingName", buildingName);
-                intent.putExtra("buildingAddress", buildingAddress);
-                intent.putExtra("buildingDescription", buildingDescription);
+                intent.putExtra("buildingName", theSelectedBuilding.getName());
+                intent.putExtra("buildingAddress", theSelectedBuilding.getAddress());
+                intent.putExtra("buildingDescription", theSelectedBuilding.getDescription());
+
+                // Loop to read the OpenHour of the selected building
+                String openHours = "";
+                for (int i=0; i<theSelectedBuilding.getOpenHours().size(); i++) {
+                    openHours += theSelectedBuilding.getOpenHours().get(i)+"\n";
+                }
+
+                intent.putExtra("buildingOpenHours", openHours);
                 startActivity(intent);
             }
         });
@@ -78,17 +85,10 @@ public class MainActivity extends ListActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        return false;
-    }
+//    @Override
+//    protected void onDestroy(){
+//        // Cleanup code comes here!
+//    }
 
 
     private void requestData(String uri) {
@@ -106,7 +106,7 @@ public class MainActivity extends ListActivity {
         return (netInfo != null && netInfo.isConnectedOrConnecting()) ? true : false;
     }
 
-    private class MyTask extends AsyncTask<String, String, String> {
+    private class MyTask extends AsyncTask<String, String, List<Building>> {
 
         @Override
         protected void onPreExecute() {
@@ -117,14 +117,14 @@ public class MainActivity extends ListActivity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
-            String content = HttpManager.getData(params[0]);
+        protected List<Building> doInBackground(String... params) {
+            String content = HttpManager.getData(params[0], "alve0024", "password" );
             buildingList = BuildingJSONParser.parseFeed(content);
-            return content;
+            return buildingList;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(List<Building> result) {
             tasks.remove(this);
             if (tasks.size() == 0) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -134,15 +134,29 @@ public class MainActivity extends ListActivity {
                 Toast.makeText(MainActivity.this, "Web service not available", Toast.LENGTH_LONG).show();
                 return;
             }
-
             updateDisplay();
         }
+    }
 
-        @Override
-        protected void onProgressUpdate(String... values) {
-//			updateDisplay(values[0]);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.action_about) {
+            DialogFragment newFragment = new AboutDialogFragment();
+            newFragment.show( getFragmentManager(), ABOUT_DIALOG_TAG );
+            return true;
         }
-
+        return super.onOptionsItemSelected(item);
     }
 
 }
