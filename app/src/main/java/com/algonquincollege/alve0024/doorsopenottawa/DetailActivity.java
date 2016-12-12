@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -17,7 +18,7 @@ import android.widget.Toast;
 import java.util.Locale;
 
 
-public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class DetailActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private Geocoder mGeocoder;
@@ -61,10 +62,10 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-//        Bundle bundle = getIntent().getExtras();
-//        if (bundle != null) {
-//            this.pin(bundle.getString("buildingAddress"));
-//        }
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            this.pin(bundle.getString("buildingAddress"));
+        }
     }
 
     /**
