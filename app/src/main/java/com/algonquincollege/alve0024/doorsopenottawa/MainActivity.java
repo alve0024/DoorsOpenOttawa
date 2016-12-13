@@ -15,6 +15,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,13 +28,16 @@ import android.widget.Toast;
 
 import com.algonquincollege.alve0024.doorsopenottawa.model.Building;
 import com.algonquincollege.alve0024.doorsopenottawa.parsers.BuildingJSONParser;
+import com.algonquincollege.alve0024.doorsopenottawa.HttpManager;
+import com.algonquincollege.alve0024.doorsopenottawa.HttpMethod;
+import com.algonquincollege.alve0024.doorsopenottawa.RequestPackage;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ABOUT_DIALOG_TAG;
 
@@ -46,6 +51,7 @@ public class MainActivity extends ListActivity {
     private ProgressBar progressBar;
     private List<MyTask> tasks;
     private List<Building> buildingList;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +60,9 @@ public class MainActivity extends ListActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.INVISIBLE);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         tasks = new ArrayList<>();
 
@@ -80,13 +89,41 @@ public class MainActivity extends ListActivity {
             }
         });
 
+
+        /*
+         * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
+         * performs a swipe-to-refresh gesture.
+         */
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Toast.makeText(getApplicationContext(), "Swipe Refresh Layout", Toast.LENGTH_LONG).show();
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        // Run Thread and load the list of building
+                        requestData( REST_URI );
+                    }
+                }
+        );
         // Run Thread and load the list of building
-        if (isOnline()) {
-            requestData( REST_URI );
-        } else {
-            Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+        requestData( REST_URI );
+//        searchMe();
+    }
+
+
+    private void searchMe() {
+        Building building = new Building();
+        int size = buildingList.size();
+        for(int i = 0; i < size ; i++) {
+            building = buildingList.get(i);
+            String name = building.getName();
+            if (name == "alve0024") {
+                Toast.makeText(getApplicationContext(), "I found you!", Toast.LENGTH_LONG).show();
+            }
         }
     }
+
 
 //    @Override
 //    protected void onDestroy(){
@@ -95,7 +132,11 @@ public class MainActivity extends ListActivity {
 
 
     private void requestData(String uri) {
-        new MyTask().execute(uri);
+        if (isOnline()) {
+            new MyTask().execute(uri);
+        } else {
+            Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
+        }
     }
 
     protected void updateDisplay() {
@@ -107,6 +148,11 @@ public class MainActivity extends ListActivity {
         ConnectivityManager conn_manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conn_manager.getActiveNetworkInfo();
         return (netInfo != null && netInfo.isConnectedOrConnecting()) ? true : false;
+    }
+
+    @Override
+    public void onRefresh() {
+        Toast.makeText(MainActivity.this, "Swipe Refresh Layout", Toast.LENGTH_LONG).show();
     }
 
     private class MyTask extends AsyncTask<String, String, List<Building>> {
@@ -144,7 +190,6 @@ public class MainActivity extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        Toast.makeText(MainActivity.this, "Menu Inflated", Toast.LENGTH_LONG).show();
         return true;
     }
 
@@ -159,8 +204,60 @@ public class MainActivity extends ListActivity {
             DialogFragment newFragment = new AboutDialogFragment();
             newFragment.show( getFragmentManager(), ABOUT_DIALOG_TAG );
             return true;
+        } else
+        if (id == R.id.action_add) {
+//            Toast.makeText(MainActivity.this, "Added building", Toast.LENGTH_LONG).show();
+            createBuilding();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createBuilding() {
+        String filePath = "images/building.jpg";
+        Building building = new Building();
+        building.setBuildingId(0);
+        building.setName("alve0024");
+        building.setAddress("1385 Woodroffe Ave.");
+        building.setImage(filePath);
+        building.setDescription("My building description!");
+
+        RequestPackage pkg = new RequestPackage();
+        pkg.setMethod( HttpMethod.POST );
+        pkg.setUri(REST_URI);
+        pkg.setParam("buildingId", building.getBuildingId() + "");
+        pkg.setParam("name", building.getName());
+        pkg.setParam("address", building.getAddress());
+        pkg.setParam("image", building.getImage());
+        pkg.setParam("description", building.getDescription());
+
+        DoTask postTask = new DoTask();
+        postTask.execute(pkg);
+
+    }
+
+    private class DoTask extends AsyncTask<RequestPackage, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(RequestPackage ... params) {
+            String content = HttpManager.getData(params[0].getUri(), "alve0024", "password" );
+            return content;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            progressBar.setVisibility(View.INVISIBLE);
+
+            if (result == null) {
+                Toast.makeText(MainActivity.this, "Web service not available", Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
     }
 
 }
