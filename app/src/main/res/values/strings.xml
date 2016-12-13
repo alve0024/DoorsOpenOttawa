@@ -5,5 +5,11 @@
     <string name="action_add">Add</string>
     <string name="title">Get data</string>
     <string name="get_data">Get data</string>
-    <string name="building_name_placeholder">Building name</string>
+    <string name="building_name_placeholder">Name</string>
+    <string name="building_address_placeholder">Address</string>
+    <string name="building_image_placeholder">Image location</string>
+    <string name="building_description_placeholder">Description</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+
 </resources>

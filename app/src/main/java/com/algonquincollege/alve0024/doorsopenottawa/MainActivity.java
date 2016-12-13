@@ -49,7 +49,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
     public static final String IMAGES_BASE_URL = "https://doors-open-ottawa-hurdleg.mybluemix.net/";
     public static final String REST_URI = "https://doors-open-ottawa-hurdleg.mybluemix.net/buildings";
     private ProgressBar progressBar;
-    private List<MyTask> tasks;
+    private List<GetTask> tasks;
     private List<Building> buildingList;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -132,8 +132,13 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
 
     private void requestData(String uri) {
+        RequestPackage getPackage = new RequestPackage();
+        getPackage.setMethod(HttpMethod.GET);
+        getPackage.setUri(uri);
+
         if (isOnline()) {
-            new MyTask().execute(uri);
+            GetTask getTask = new GetTask();
+            getTask.execute(getPackage);
         } else {
             Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
         }
@@ -155,7 +160,8 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         Toast.makeText(MainActivity.this, "Swipe Refresh Layout", Toast.LENGTH_LONG).show();
     }
 
-    private class MyTask extends AsyncTask<String, String, List<Building>> {
+
+    private class GetTask extends AsyncTask<RequestPackage, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -166,14 +172,13 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
         }
 
         @Override
-        protected List<Building> doInBackground(String... params) {
-            String content = HttpManager.getData(params[0], "alve0024", "password" );
-            buildingList = BuildingJSONParser.parseFeed(content);
-            return buildingList;
+        protected String doInBackground(RequestPackage... params) {
+            String content = HttpManager.getData(params[0], "alve0024", "password");
+            return content;
         }
 
         @Override
-        protected void onPostExecute(List<Building> result) {
+        protected void onPostExecute(String result) {
             tasks.remove(this);
             if (tasks.size() == 0) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -183,6 +188,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
                 Toast.makeText(MainActivity.this, "Web service not available", Toast.LENGTH_LONG).show();
                 return;
             }
+            buildingList = BuildingJSONParser.parseFeed(result);
             updateDisplay();
         }
     }
@@ -232,7 +238,6 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
         DoTask postTask = new DoTask();
         postTask.execute(pkg);
-
     }
 
     private class DoTask extends AsyncTask<RequestPackage, String, String> {
@@ -244,7 +249,7 @@ public class MainActivity extends ListActivity implements SwipeRefreshLayout.OnR
 
         @Override
         protected String doInBackground(RequestPackage ... params) {
-            String content = HttpManager.getData(params[0].getUri(), "alve0024", "password" );
+            String content = HttpManager.getData(params[0], "alve0024", "password");
             return content;
         }
 
