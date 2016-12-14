@@ -6,17 +6,22 @@ package com.algonquincollege.alve0024.doorsopenottawa;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.util.LruCache;
@@ -35,10 +40,11 @@ import com.algonquincollege.alve0024.doorsopenottawa.model.Building;
  *
  * Reference: based on LazyLoad in "Connecting Android Apps to RESTful Web Services" with David Gassner
  */
-public class BuildingAdapter extends ArrayAdapter<Building> {
+public class BuildingAdapter extends ArrayAdapter<Building> implements Filterable {
 
     private Context context;
     private List<Building> buildingList;
+    private ArrayList<Building> arrayOfBuildings;
     private LruCache<Integer, Bitmap> imageCache;
 
     public BuildingAdapter(Context context, int resource, List<Building> objects) {
@@ -117,11 +123,60 @@ public class BuildingAdapter extends ArrayAdapter<Building> {
 
         @Override
         protected void onPostExecute(BuildingAndView result) {
+            if (result == null) return;
             ImageView image = (ImageView) result.view.findViewById(R.id.imageView);
             image.setImageBitmap(result.bitmap);
             //result.building.setBitmap(result.bitmap);
             imageCache.put(result.building.getBuildingId(), result.bitmap);
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+
+        Filter filter = new Filter() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                if(constraint.length()>0){
+                    buildingList = (List<Building>) results.values;
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                ArrayList<Building> FilteredArrayNames = new ArrayList<>();
+                if (constraint.length() > 0) {
+                    // perform your search here using the searchConstraint String.
+                    constraint = constraint.toString().toLowerCase();
+                    for (int i = 0; i < buildingList.size(); i++) {
+                        String dataNames = buildingList.get(i).getName();
+                        if (dataNames.toLowerCase().startsWith(constraint.toString())) {
+                            FilteredArrayNames.add(buildingList.get(i));
+                        }
+                    }
+                    results.count = FilteredArrayNames.size();
+                    results.values = FilteredArrayNames;
+                }
+                else{
+                    results.count = buildingList.size();
+                    results.values = buildingList.size();
+                }
+
+
+
+
+                Log.e("VALUES", results.values.toString());
+
+                return results;
+
+            }
+        };
+
+        return filter;
     }
 }
 

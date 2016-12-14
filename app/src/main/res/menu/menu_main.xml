@@ -1,7 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_add" android:title="About" android:icon="@drawable/ic_add_circle_outline_black_24dp"
-        android:orderInCategory="100" android:showAsAction="ifRoom" />
-    <item android:id="@+id/action_about" android:title="About" android:icon="@drawable/ic_error_outline_black_24dp"
-        android:orderInCategory="100" android:showAsAction="ifRoom" />
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/search"
+        android:title="Search"
+        android:icon="@android:drawable/ic_search_category_default"
+        android:showAsAction="always"
+        android:actionViewClass="android.widget.SearchView" />
+
+    <item android:id="@+id/action_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:orderInCategory="100"
+        android:showAsAction="always"/>
+    <item
+        android:icon="@android:drawable/ic_menu_edit"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:id="@+id/action_edit" />
+    <item
+        android:icon="@android:drawable/ic_menu_delete"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:id="@+id/action_delete" />
+    <item android:id="@+id/action_about"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:orderInCategory="100"
+        android:showAsAction="always"/>
+
+    <group android:id="@+id/sort_options" android:checkableBehavior="single">
+        <item android:id="@+id/action_sort_name_asc"
+            android:title="Sort by Name (a-z)"
+            android:checked="false" />
+        <item android:id="@+id/action_sort_name_dsc"
+            android:title="Sort by Name (z-a)"
+            android:checked="false" />
+    </group>
 </menu>
