@@ -14,14 +14,15 @@ package com.algonquincollege.alve0024.doorsopenottawa;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
-
+import android.widget.TextView;
 
 /**
- * NewBuildingActivity allows the user to input a new Building
+ * EditBuildingActivity allows the user to edit the building information
+ * except the name and Id.
  *
  * Everything is handled at MainActivity, it's just returned the
  * intent result from the user.
@@ -32,22 +33,30 @@ import android.widget.EditText;
  *
  */
 
-public class NewBuildingActivity extends Activity {
+public class EditBuildingActivity extends Activity {
 
-    /* Declaration of the EditTexts (Name is fixed and can not be changed  */
+    private int mIdBuilding;
+    private TextView mNameLabel;
     private EditText mAddressEditText;
-    private EditText mImageEditText;
     private EditText mDescriptionEditText;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_building);
+        setContentView(R.layout.activity_edit_building);
 
         /* Connect with the view */
+        mNameLabel = (TextView) findViewById(R.id.nameLabel);
         mAddressEditText = (EditText) findViewById(R.id.addressTxt);
         mDescriptionEditText = (EditText) findViewById(R.id.descriptionTxt);
-        mImageEditText = (EditText) findViewById(R.id.imageTxt);
+        
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mIdBuilding = bundle.getInt("buildingId");
+            mNameLabel.setText(bundle.getString("buildingName"));
+            mAddressEditText.setText(bundle.getString("buildingAddress"));
+            mDescriptionEditText.setText(bundle.getString("buildingDescription"));
+        }
     }
 
     /**
@@ -64,7 +73,7 @@ public class NewBuildingActivity extends Activity {
         Intent intent = new Intent();
         intent.putExtra("RESULT", "CANCEL");
 
-        setResult(1, intent);
+        setResult(2, intent);
         finish();
     }
 
@@ -82,12 +91,11 @@ public class NewBuildingActivity extends Activity {
     public void saveBuilding(View v) {
         Intent intent = new Intent();
         intent.putExtra("RESULT", "SAVE");
-        intent.putExtra("nameBuilding", "alve0024");
+        intent.putExtra("idBuilding", mIdBuilding+"");
         intent.putExtra("addressBuilding", mAddressEditText.getText().toString());
-        intent.putExtra("imageBuilding", mImageEditText.getText().toString());
         intent.putExtra("descriptionBuilding", mDescriptionEditText.getText().toString());
 
-        setResult(1, intent);
+        setResult(2, intent);
         finish();
     }
 }

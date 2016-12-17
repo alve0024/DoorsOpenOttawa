@@ -1,3 +1,14 @@
+/*********************************************************************************************
+ *   Doors Open Ottawa - List information about the Buildings with the Doors Open            *
+ *                                                                                           *
+ *   @author Leonardo Alps (alve0024@algonquinlive.com)                                      *
+ *                                                                                           *
+ *   Supervision: Gerald.Hurdle@AlgonquinCollege.com                                         *
+ *                                                                                           *
+ *   Algonquin College - All right reserved!                                                 *
+ *                                                                                           *
+ *********************************************************************************************/
+
 package com.algonquincollege.alve0024.doorsopenottawa;
 
 import android.app.AlertDialog;
@@ -6,11 +17,9 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-
 /**
- * Created by leonardoalps on 2016-12-02.
+ * Inflate a dialog box with details about the author
  */
-
 public class AboutDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

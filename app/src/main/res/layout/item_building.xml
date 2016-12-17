@@ -3,6 +3,7 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark">
 
+
     <TextView
         android:text="TextView"
         android:layout_width="wrap_content"
@@ -33,5 +34,29 @@
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
         android:textColor="@android:color/holo_orange_light"
         android:textAllCaps="false" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buildingAddress"
+        android:layout_alignStart="@+id/buildingAddress"
+        android:id="@+id/buildingId"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small"
+        android:textColor="@android:color/holo_orange_light"
+        android:textAllCaps="false" />
+
+    <CheckBox
+        android:id="@+id/favButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/start_selector"
+        style="?android:attr/starStyle"
+        android:text=""
+        android:focusable="false"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="onFavoriteClicked" />
+
 
 </RelativeLayout>

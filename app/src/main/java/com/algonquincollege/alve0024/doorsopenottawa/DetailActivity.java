@@ -1,3 +1,14 @@
+/*********************************************************************************************
+ *   Doors Open Ottawa - List information about the Buildings with the Doors Open            *
+ *                                                                                           *
+ *   @author Leonardo Alps (alve0024@algonquinlive.com)                                      *
+ *                                                                                           *
+ *   Supervision: Gerald.Hurdle@AlgonquinCollege.com                                         *
+ *                                                                                           *
+ *   Algonquin College - All right reserved!                                                 *
+ *                                                                                           *
+ *********************************************************************************************/
+
 package com.algonquincollege.alve0024.doorsopenottawa;
 
 
@@ -7,10 +18,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import android.location.Address;
 import android.location.Geocoder;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,15 +29,22 @@ import android.widget.Toast;
 import java.util.Locale;
 
 
+/**
+ * DetailActivity only displays more details of a particular building selected from
+ * MainActivity's ListView.
+ *
+ * - Shows Name, Address, Description and Open Hour
+ * - Shows a map indicating the location of the building in the map
+ */
 public class DetailActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private Geocoder mGeocoder;
 
-    private TextView buildingName;
-    private TextView buildingAddress;
-    private TextView buildingDescription;
-    private TextView buildingOpenHours;
+    private TextView mBuildingNameTextView;
+    private TextView mBuildingAddressTextView;
+    private TextView mBuildingDescriptionTextView;
+    private TextView mBuildingOpenHoursTextView;
 
 
     @Override
@@ -41,24 +59,29 @@ public class DetailActivity extends FragmentActivity implements OnMapReadyCallba
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        buildingName = (TextView) findViewById(R.id.buildingName);
-        buildingAddress = (TextView) findViewById(R.id.buildingAddress);
-        buildingDescription = (TextView) findViewById(R.id.buildingDescription);
-        buildingOpenHours = (TextView) findViewById(R.id.buildingOpenHours);
+        mBuildingNameTextView = (TextView) findViewById(R.id.buildingName);
+        mBuildingAddressTextView = (TextView) findViewById(R.id.buildingAddress);
+        mBuildingDescriptionTextView = (TextView) findViewById(R.id.buildingDescription);
+        mBuildingOpenHoursTextView = (TextView) findViewById(R.id.buildingOpenHours);
 
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            buildingName.setText(bundle.getString("buildingName"));
-            buildingAddress.setText(bundle.getString("buildingAddress"));
-            buildingDescription.setText(bundle.getString("buildingDescription"));
-            buildingOpenHours.setText(bundle.getString("buildingOpenHours"));
+            mBuildingNameTextView.setText(bundle.getString("buildingName"));
+            mBuildingAddressTextView.setText(bundle.getString("buildingAddress"));
+            mBuildingDescriptionTextView.setText(bundle.getString("buildingDescription"));
+            mBuildingOpenHoursTextView.setText(bundle.getString("buildingOpenHours"));
 
             this.pin(bundle.getString("buildingAddress"));
         }
 
     }
 
+    /**
+     * Callback interface for when the map is ready to be used.
+     * @param googleMap A non-null instance of a GoogleMap associated with the MapFragment or
+     *                  MapView that defines the callback.
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

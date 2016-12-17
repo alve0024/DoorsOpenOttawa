@@ -1,3 +1,14 @@
+/*********************************************************************************************
+ *   Doors Open Ottawa - List information about the Buildings with the Doors Open            *
+ *                                                                                           *
+ *   @author Leonardo Alps (alve0024@algonquinlive.com)                                      *
+ *                                                                                           *
+ *   Supervision: Gerald.Hurdle@AlgonquinCollege.com                                         *
+ *                                                                                           *
+ *   Algonquin College - All right reserved!                                                 *
+ *                                                                                           *
+ *********************************************************************************************/
+
 package com.algonquincollege.alve0024.doorsopenottawa;
 
 import java.io.UnsupportedEncodingException;

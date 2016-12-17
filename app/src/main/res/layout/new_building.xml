@@ -45,14 +45,16 @@
             android:layout_width="174dp"
             android:layout_height="wrap_content"
             android:id="@+id/cancelBtn"
-            android:layout_weight="0.22" />
+            android:layout_weight="0.22"
+            android:onClick="cancelBuilding"/>
 
         <Button
             android:text="@string/save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/saveBtn"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="saveBuilding"/>
 
     </LinearLayout>
 

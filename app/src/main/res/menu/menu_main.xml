@@ -12,18 +12,10 @@
         android:icon="@android:drawable/ic_menu_add"
         android:orderInCategory="100"
         android:showAsAction="always"/>
-    <item
-        android:icon="@android:drawable/ic_menu_edit"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:id="@+id/action_edit" />
-    <item
-        android:icon="@android:drawable/ic_menu_delete"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:id="@+id/action_delete" />
+
+
     <item android:id="@+id/action_about"
-        android:icon="@android:drawable/ic_dialog_info"
+        android:icon="@android:drawable/ic_menu_info_details"
         android:orderInCategory="100"
         android:showAsAction="always"/>
 
